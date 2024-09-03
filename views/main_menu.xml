@@ -1,0 +1,18 @@
+
+<odoo>
+    <data>
+        <menuitem
+                id="hospital_menu_root"
+                name="Hospital"/>
+
+        <menuitem
+                id="patient_details_menu"
+                name="Patients Details"
+                parent="hospital_menu_root"/>
+
+
+
+
+
+    </data>
+</odoo>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Patient Tree View -->
+        <record id="patient_tree_view" model="ir.ui.view">
+            <field name="name">patient.tree</field>
+            <field name="model">patient</field>
+            <field name="arch" type="xml">
+                <tree string="All Patient">
+                    <field name="name"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="patient_Form_view" model="ir.ui.view">
+            <field name="name">patient.form</field>
+            <field name="model">patient</field>
+            <field name="arch" type="xml">
+                <form string="Patient Detail">
+                    <sheet>
+                        <!--  add ribbon Archive -->
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                        <group string="Patient Info">
+                            <group>
+                                <field name="name"/>
+                                <field name="date_of_birth"/>
+                                <field name="age"/>
+                            </group>
+                            <group>
+                                <field name="gender"/>
+                                <field name="active" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <!--  chatter  -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Patient Search View -->
+        <record id="patient_search_view" model="ir.ui.view">
+            <field name="name">patient.search</field>
+            <field name="model">patient</field>
+            <field name="arch" type="xml">
+                <search>
+                    <!--
+                    [('name', 'ilike', 'dog')]
+                    This is the most universal search. It will find records with name 'dog', 'DOGS', 'Bulldog', etc..
+                    -->
+                    <field name="name" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="age"/>
+                    <field name="gender"/>
+                    <!--add filters-->
+                    <filter string="Male" name="filter_male" domain="[('gender', '=', 'male')]"/>
+                    <filter string="Female" name="filter_female" domain="[('gender', '=', 'female')]"/>
+                    <!--separator means and operator-->
+                    <separator/>
+                    <filter string="Kids" name="filter_kids" domain="[('age', '&lt;', 18)]"/>
+                    <separator/>
+                    <filter string="Archive" name="filter_archive" domain="[('active', '=', False)]"/>
+                    <!--group by-->
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_gender" string="Gender" domain="[]" context="{'group_by':'gender'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="gender" icon="fa-users" enable_counters="1"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+        <!--Patient Action-->
+        <record id="patient_action" model="ir.actions.act_window">
+            <field name="name">Patients</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">patient</field>
+            <field name="view_mode">tree,form</field>
+            <!-- to add default search filter or group by 'search_default_nameOfFilterOrNameOfGroupBy':1-->
+            <field name="context">{'search_default_group_by_gender':1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Hi, Create New Patient!
+                </p>
+            </field>
+        </record>
+
+        <!--Kids Patient Action-->
+        <record id="kids_patient_action" model="ir.actions.act_window">
+            <field name="name">Patients</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">patient</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_age':18}</field>
+            <field name="domain">[('age', '&lt;', 18)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Hi, Create New Patient!
+                </p>
+            </field>
+        </record>
+        <menuitem
+                id="patient_menu"
+                name="Patients"
+                parent="patient_details_menu"
+                action="patient_action"/>
+
+        <menuitem
+                id="kids_patient_menu"
+                name="Kids Patients"
+                parent="patient_details_menu"
+                action="kids_patient_action"/>
+    </data>
+</odoo>
